@@ -1,4 +1,5 @@
 from mmu import MMU
+from random import randint
 
 class RandMMU(MMU):
     def __init__(self, frames):
