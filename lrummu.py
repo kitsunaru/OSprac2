@@ -3,7 +3,7 @@ from mmu import MMU
 class LruMMU(MMU):
     def __init__(self, frames):
         # TODO: Constructor logic for LruMMU
-        self.lru_mem_table = [None] * frames
+        self.lru_mem_table = [None] * (frames - 1)
         self.dirty_arr = []
         self.read_count = 0
         self.write_count = 0
