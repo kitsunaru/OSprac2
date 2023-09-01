@@ -36,13 +36,16 @@ class LruMMU(MMU):
                 self.disk_arr.remove(page_number)
             self.lru_mem_table.append(page_number)
             self.read_count += 1
+            if self.dbg:
+                print("--------------------------------")
+                print("Page Fault")
         else:
             self.lru_mem_table.remove(page_number)
             self.lru_mem_table.append(page_number)
             self.read_count += 1
-        if self.dbg:
+            if self.dbg:
                 print("--------------------------------")
-                print("Page Fault")
+        if self.dbg:
                 print(f"Read: {page_number}")
                 print(f"Evict victim: page number: {self.lru_mem_table[0]}")
                 print(f"Dirty: {self.dirty_arr}")
