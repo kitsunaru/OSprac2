@@ -43,7 +43,7 @@ class LruMMU(MMU):
         else:
             self.lru_mem_table.remove(page_number)
             self.lru_mem_table.append(page_number)
-            self.read_count += 1
+            # self.read_count += 1
             if self.dbg:
                 print("--------------------------------")
         if self.dbg:
@@ -71,7 +71,8 @@ class LruMMU(MMU):
                     print(f"stuff in memory: {self.lru_mem_table}")
 
             if self.dbg:
-                print(f"Write: {page_number}")
+                if self.lru_mem_table[0] is not None:
+                    print(f"Write: {self.lru_mem_table[0]}")
                 print(f"Evict victim: page number: {self.lru_mem_table[0]}")
             self.lru_mem_table.pop(0)
             self.lru_mem_table.append(page_number)
