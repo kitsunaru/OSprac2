@@ -30,8 +30,7 @@ class LruMMU(MMU):
             # TODO: add element 0 dirty bit check, if it is dirty -> write to disk (w_cnt++); then pop element 0
             if self.lru_mem_table[0] in self.dirty_arr:
                 self.write_count += 1
-                while self.lru_mem_table[0] in self.dirty_arr:
-                    self.dirty_arr.remove(self.lru_mem_table[0])
+                self.dirty_arr.remove(self.lru_mem_table[0])
             self.lru_mem_table.pop(0)
             if page_number in self.disk_arr:
                     self.disk_arr.remove(page_number)
@@ -40,14 +39,15 @@ class LruMMU(MMU):
             if self.dbg:
                 print("--------------------------------")
                 print("Page Fault")
+                print(f"Read from disk: {page_number}")
         else:
             self.lru_mem_table.remove(page_number)
             self.lru_mem_table.append(page_number)
             # self.read_count += 1
             if self.dbg:
                 print("--------------------------------")
+                print(f"Read from memory: {page_number}")
         if self.dbg:
-                print(f"Read: {page_number}")
                 print(f"Evict victim: page number: {self.lru_mem_table[0]}")
                 print(f"Dirty: {self.dirty_arr}")
                 print(f"stuff in memory: {self.lru_mem_table}")
@@ -62,8 +62,7 @@ class LruMMU(MMU):
                 print("Page Fault")
 
             if self.lru_mem_table[0] in self.dirty_arr:
-                while self.lru_mem_table[0] in self.dirty_arr:
-                    self.dirty_arr.remove(self.lru_mem_table[0])
+                self.dirty_arr.remove(self.lru_mem_table[0])
                 self.write_count += 1
                 self.disk_arr.append(self.lru_mem_table[0])
                 if self.dbg:
