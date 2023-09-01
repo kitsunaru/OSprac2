@@ -83,11 +83,12 @@ class LruMMU(MMU):
 
             if page_number not in self.dirty_arr:
                 self.dirty_arr.append(page_number)
-
-            print(f"mem: {self.lru_mem_table}")
-            print(f"dirty pile: {self.dirty_arr}")
+            if self.dbg:
+                print(f"mem: {self.lru_mem_table}")
+                print(f"dirty pile: {self.dirty_arr}")
         else:
-            print(f"In MMU Write: {page_number}")
+            if self.dbg:
+                print(f"In MMU Write: {page_number}")
             self.lru_mem_table.remove(page_number)
             self.lru_mem_table.append(page_number)
             if page_number not in self.dirty_arr:
