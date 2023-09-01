@@ -25,11 +25,7 @@ class LruMMU(MMU):
         if page_number not in self.lru_mem_table:
             self.fault_count += 1
             # if None not in self.lru_mem_table:
-            if self.dbg:
-                print("Page Fault")
-                print("Read")
-                print(f"Evict victim: page number: {self.lru_mem_table[0]}")
-                print(f"stuff in memory: {self.lru_mem_table}")
+
             # TODO: add element 0 dirty bit check, if it is dirty -> write to disk (w_cnt++); then pop element 0
             if self.lru_mem_table[0] in self.dirty_arr:
                 self.write_count += 1
@@ -40,6 +36,13 @@ class LruMMU(MMU):
             self.lru_mem_table.remove(page_number)
             self.lru_mem_table.append(page_number)
         self.read_count += 1
+        if self.dbg:
+                print("--------------------------------")
+                print("Page Fault")
+                print("Read")
+                print(f"Evict victim: page number: {self.lru_mem_table[0]}")
+                print(f"Dirty: {self.dirty_arr}")
+                print(f"stuff in memory: {self.lru_mem_table}")
 
     def write_memory(self, page_number):
         # TODO: Implement the method to write memory
@@ -47,6 +50,7 @@ class LruMMU(MMU):
         if page_number not in self.lru_mem_table:
             self.fault_count += 1
             if self.dbg:
+                print("--------------------------------")
                 print("Page Fault")
                 # print(f"stuff in memory: {self.lru_mem_table}")
             if self.lru_mem_table[0] in self.dirty_arr:
