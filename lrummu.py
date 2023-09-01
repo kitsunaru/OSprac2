@@ -48,7 +48,7 @@ class LruMMU(MMU):
         else:
             self.lru_mem_table.remove(page_number)
             self.lru_mem_table.append(page_number)
-            self.read_count += 1
+            # self.read_count += 1
             if self.dbg:
                 # print("--------------------------------")
                 print(f"Read from memory: {page_number}")
