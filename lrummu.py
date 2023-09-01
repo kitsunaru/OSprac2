@@ -30,10 +30,11 @@ class LruMMU(MMU):
             # TODO: add element 0 dirty bit check, if it is dirty -> write to disk (w_cnt++); then pop element 0
             if self.lru_mem_table[0] in self.dirty_arr:
                 self.write_count += 1
-                self.dirty_arr.remove(self.lru_mem_table[0])
+                while self.lru_mem_table[0] in self.dirty_arr:
+                    self.dirty_arr.remove(self.lru_mem_table[0])
             self.lru_mem_table.pop(0)
             if page_number in self.disk_arr:
-                self.disk_arr.remove(page_number)
+                    self.disk_arr.remove(page_number)
             self.lru_mem_table.append(page_number)
             self.read_count += 1
             if self.dbg:
@@ -61,12 +62,13 @@ class LruMMU(MMU):
                 print("Page Fault")
 
             if self.lru_mem_table[0] in self.dirty_arr:
+                while self.lru_mem_table[0] in self.dirty_arr:
+                    self.dirty_arr.remove(self.lru_mem_table[0])
+                self.write_count += 1
+                self.disk_arr.append(self.lru_mem_table[0])
                 if self.dbg:
                     print(f"Disk Write: {self.lru_mem_table[0]}")
                     print(f"stuff in memory: {self.lru_mem_table}")
-                self.dirty_arr.remove(self.lru_mem_table[0])
-                self.write_count += 1
-                self.disk_arr.append(self.lru_mem_table[0])
 
             if self.dbg:
                 print(f"Write: {page_number}")
@@ -83,7 +85,8 @@ class LruMMU(MMU):
             print(f"In MMU Write: {page_number}")
             self.lru_mem_table.remove(page_number)
             self.lru_mem_table.append(page_number)
-            self.dirty_arr.append(page_number)
+            if page_number not in self.dirty_arr:
+                self.dirty_arr.append(page_number)
 
     def get_total_disk_reads(self):
         # TODO: Implement the method to get total disk reads
