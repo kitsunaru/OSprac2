@@ -1,6 +1,7 @@
 from mmu import MMU
+from random import randint
 
-class LruMMU(MMU):
+class RandMMU(MMU):
     def __init__(self, frames):
         # TODO: Constructor logic for LruMMU
         self.lru_mem_table = [None] * (frames)
