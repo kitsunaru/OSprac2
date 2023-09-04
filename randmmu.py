@@ -4,22 +4,31 @@ from random import randint
 class RandMMU(MMU):
     def __init__(self, frames):
         # TODO: Constructor logic for RandMMU
-        pass
+        self.rand_mem_table = [None] * (frames)
+        self.dirty_arr = []
+        self.disk_arr = []
+        self.read_count = 0
+        self.write_count = 0
+        self.fault_count = 0
+        self.dbg = None
 
     def set_debug(self):
         # TODO: Implement the method to set debug mode
-        pass
+        self.dbg = True # sets the debug mode to True
 
     def reset_debug(self):
         # TODO: Implement the method to reset debug mode
-        pass
+        self.dbg = False # resets the debug mode to False
 
     def read_memory(self, page_number):
         # TODO: Implement the method to read memory
+        # randint()
+        
         pass
 
     def write_memory(self, page_number):
         # TODO: Implement the method to write memory
+        # take the randint() result from read_memory
         pass
 
     def get_total_disk_reads(self):
