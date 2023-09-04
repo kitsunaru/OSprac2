@@ -3,8 +3,10 @@ from mmu import MMU
 class ClockMMU(MMU):
     def __init__(self, frames):
         # TODO: Constructor logic for clockMMU
-        self.clock_mem_table = [None] * (frames)
         self.clock_index = 0
+        self.clock_mem_table = [None] * (frames)
+        self.use_arr = [None] * (frames)
+        self.clock_frames = frames
         self.dirty_arr = []
         self.read_count = 0
         self.write_count = 0
@@ -29,19 +31,31 @@ class ClockMMU(MMU):
         if page_number not in self.clock_mem_table:
             self.fault_count += 1
             self.read_count += 1
-            # if None not in self.clock_mem_table:
+            
+            if None not in self.clock_mem_table:
+                while self.use_arr[self.clock_index] == 1:
+                    self.use_arr[self.clock_index] = 0
+                    self.clock_index += 1
+                    self.clock_index %= self.clock_frames
 
-            # TODO: add element 0 dirty bit check, if it is dirty -> write to disk (w_cnt++); then pop element 0
-            if self.clock_mem_table[0] in self.dirty_arr:
-                self.write_count += 1
-                self.dirty_arr.remove(self.clock_mem_table[0])
-            if self.dbg:
-                print("--------------------------------")
-                print("######")
-                print(f"Evict victim: page number: {self.clock_mem_table[0]}")
-                print("######")
-            self.clock_mem_table.pop(0)
-            self.clock_mem_table.append(page_number)
+                if self.clock_mem_table[self.clock_index] in self.dirty_arr:
+                    self.write_count += 1
+                    self.dirty_arr.remove(self.clock_mem_table[self.clock_index])
+
+                    if self.dbg:
+                        print("--------------------------------")
+                        print("######")
+                        print(f"Evict victim: page number: {self.clock_mem_table[self.clock_index]}")
+                        print("######")
+            else:
+                for i in range(self.clock_frames):
+                    if self.clock_mem_table[i] == None:
+                        self.clock_index = i
+                        break
+            self.use_arr[self.clock_index] = 1
+
+
+            self.clock_mem_table[self.clock_index] = page_number
             if self.dbg:
                 # print("--------------------------------")
                 print("Page Fault")
@@ -49,8 +63,10 @@ class ClockMMU(MMU):
             if page_number in self.dirty_arr:
                 self.dirty_arr.remove(page_number)
         else:
-            self.clock_mem_table.remove(page_number)
-            self.clock_mem_table.append(page_number)
+            for i in range(self.clock_frames):
+                if self.clock_mem_table[i] == page_number:
+                    self.use_arr[i] = 1
+
             if self.dbg:
                 # print("--------------------------------")
                 print(f"Read from memory: {page_number}")
@@ -68,19 +84,32 @@ class ClockMMU(MMU):
                 print("--------------------------------")
                 print("Page Fault")
 
-            if self.clock_mem_table[0] in self.dirty_arr:
-                self.dirty_arr.remove(self.clock_mem_table[0])
-                self.write_count += 1
-                if self.dbg:
-                    print(f"Disk Write: {self.clock_mem_table[0]}")
-                    print(f"stuff in memory: {self.clock_mem_table}")
+            if None not in self.clock_mem_table:
+                while self.use_arr[self.clock_index] == 1:
+                    self.use_arr[self.clock_index] = 0
+                    self.clock_index += 1
+                    self.clock_index %= self.clock_frames
+
+                if self.clock_mem_table[self.clock_index] in self.dirty_arr:
+                    self.write_count += 1
+                    self.dirty_arr.remove(self.clock_mem_table[self.clock_index])
+                    if self.dbg:
+                        print(f"Disk Write: {self.clock_mem_table[0]}")
+                        print(f"stuff in memory: {self.clock_mem_table}")
+            else:
+                for i in range(self.clock_frames):
+                    if self.clock_mem_table[i] == None:
+                        self.clock_index = i
+                        break
+            self.use_arr[self.clock_index] = 1
+
+                
 
             if self.dbg:
-                if self.clock_mem_table[0] is not None:
-                    print(f"Write: {self.clock_mem_table[0]}")
-                print(f"Evict victim: page number: {self.clock_mem_table[0]}")
-            self.clock_mem_table.pop(0)
-            self.clock_mem_table.append(page_number)
+                if self.clock_mem_table[self.clock_index] is not None:
+                    print(f"Write: {self.clock_mem_table[self.clock_index]}")
+                print(f"Evict victim: page number: {self.clock_mem_table[self.clock_index]}")
+            self.clock_mem_table[self.clock_index] = page_number
 
             if page_number not in self.dirty_arr:
                 self.dirty_arr.append(page_number)
@@ -90,8 +119,10 @@ class ClockMMU(MMU):
         else:
             if self.dbg:
                 print(f"In MMU Write: {page_number}")
-            self.clock_mem_table.remove(page_number)
-            self.clock_mem_table.append(page_number)
+            for i in range(self.clock_frames):
+                if self.clock_mem_table[i] == page_number:
+                    self.use_arr[i] = 1
+                    break
             if page_number not in self.dirty_arr:
                 self.dirty_arr.append(page_number)
 
