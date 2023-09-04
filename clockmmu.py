@@ -60,12 +60,14 @@ class ClockMMU(MMU):
                 # print("--------------------------------")
                 print("Page Fault")
                 print(f"Read from disk: {page_number}")
+                print(f"clock index: {self.clock_index}")
             # if page_number in self.dirty_arr:
-                # self.dirty_arr.remove(page_number)
+            #     self.dirty_arr.remove(page_number)
         else:
             for i in range(self.clock_frames):
                 if self.clock_mem_table[i] == page_number:
                     self.use_arr[i] = 1
+                    break
 
             if self.dbg:
                 # print("--------------------------------")
@@ -94,7 +96,7 @@ class ClockMMU(MMU):
                     self.write_count += 1
                     self.dirty_arr.remove(self.clock_mem_table[self.clock_index])
                     if self.dbg:
-                        print(f"Disk Write: {self.clock_mem_table[0]}")
+                        print(f"Disk Write: {self.clock_mem_table[self.clock_index]}")
                         print(f"stuff in memory: {self.clock_mem_table}")
             else:
                 for i in range(self.clock_frames):
@@ -103,12 +105,12 @@ class ClockMMU(MMU):
                         break
             self.use_arr[self.clock_index] = 1
 
-                
 
             if self.dbg:
                 if self.clock_mem_table[self.clock_index] is not None:
                     print(f"Write: {self.clock_mem_table[self.clock_index]}")
                 print(f"Evict victim: page number: {self.clock_mem_table[self.clock_index]}")
+
             self.clock_mem_table[self.clock_index] = page_number
 
             if page_number not in self.dirty_arr:
@@ -123,6 +125,8 @@ class ClockMMU(MMU):
                 if self.clock_mem_table[i] == page_number:
                     self.use_arr[i] = 1
                     break
+            self.clock_index += 1
+            self.clock_index %= self.clock_frames
             if page_number not in self.dirty_arr:
                 self.dirty_arr.append(page_number)
 
