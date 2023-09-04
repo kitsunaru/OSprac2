@@ -5,7 +5,6 @@ class LruMMU(MMU):
         # TODO: Constructor logic for LruMMU
         self.lru_mem_table = [None] * (frames)
         self.dirty_arr = []
-        self.disk_arr = []
         self.read_count = 0
         self.write_count = 0
         self.fault_count = 0
@@ -38,22 +37,19 @@ class LruMMU(MMU):
                 print(f"Evict victim: page number: {self.lru_mem_table[0]}")
                 print("######")
             self.lru_mem_table.pop(0)
-            if page_number in self.disk_arr:
-                    self.disk_arr.remove(page_number)
             self.lru_mem_table.append(page_number)
-            # self.read_count += 1
             if self.dbg:
                 # print("--------------------------------")
                 print("Page Fault")
                 print(f"Read from disk: {page_number}")
+            if page_number in self.dirty_arr:
+                self.dirty_arr.remove(page_number)
         else:
             self.lru_mem_table.remove(page_number)
             self.lru_mem_table.append(page_number)
             if self.dbg:
                 # print("--------------------------------")
                 print(f"Read from memory: {page_number}")
-        if page_number in self.dirty_arr:
-            self.dirty_arr.remove(page_number)
         if self.dbg:
                 print(f"Dirty: {self.dirty_arr}")
                 print(f"stuff in memory: {self.lru_mem_table}")
@@ -71,7 +67,6 @@ class LruMMU(MMU):
             if self.lru_mem_table[0] in self.dirty_arr:
                 self.dirty_arr.remove(self.lru_mem_table[0])
                 self.write_count += 1
-                self.disk_arr.append(self.lru_mem_table[0])
                 if self.dbg:
                     print(f"Disk Write: {self.lru_mem_table[0]}")
                     print(f"stuff in memory: {self.lru_mem_table}")
