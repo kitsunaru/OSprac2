@@ -49,16 +49,14 @@ class LruMMU(MMU):
         else:
             self.lru_mem_table.remove(page_number)
             self.lru_mem_table.append(page_number)
-            # self.read_count += 1
             if self.dbg:
                 # print("--------------------------------")
                 print(f"Read from memory: {page_number}")
-        if self.dbg:
-                # print(f"Evict victim: page number: {self.lru_mem_table[0]}")
-                print(f"Dirty: {self.dirty_arr}")
-                print(f"stuff in memory: {self.lru_mem_table}")
         if page_number in self.dirty_arr:
             self.dirty_arr.remove(page_number)
+        if self.dbg:
+                print(f"Dirty: {self.dirty_arr}")
+                print(f"stuff in memory: {self.lru_mem_table}")
 
     def write_memory(self, page_number):
         # TODO: Implement the method to write memory
