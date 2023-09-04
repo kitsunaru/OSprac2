@@ -1,6 +1,6 @@
 from mmu import MMU
 
-class LruMMU(MMU):
+class ClockMMU(MMU):
     def __init__(self, frames):
         # TODO: Constructor logic for LruMMU
         self.lru_mem_table = [None] * (frames)
