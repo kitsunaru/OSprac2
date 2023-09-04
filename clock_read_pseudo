@@ -1,0 +1,32 @@
+
+class ClockMMU(MMU):
+    def __init__(self, frames):
+	clock_index = 0 (any number)
+	self.clock_mem_table = [None] * (frames)
+        self.use_arr = [None] * (frames)
+        self.dirty_arr = []
+        self.read_count = 0
+        self.write_count = 0
+        self.fault_count = 0
+        self.dbg = None
+
+
+    def read_memory(self, page_number):
+
+	if page_number not in self.lru_mem_table:
+		//the usual stuff like read++
+		if None not in mem_table
+			//go around clock and choose victim (set index)
+			while (UA[i] == 1)
+			    UA[i] = 0;
+			    i++, mod frames
+			if UA[i] in dirty_arr, remove and write++
+
+		else (there are Nulls)
+			  //first null found is victim, set index to where it was found
+
+		//replace values: new VPN in table and 1 in useArr at index(do not push/pop to keep order in PT)
+
+	else
+		//get its index in mem_table (index = this)
+		//set UA[index] to 1
