@@ -60,8 +60,8 @@ class ClockMMU(MMU):
                 # print("--------------------------------")
                 print("Page Fault")
                 print(f"Read from disk: {page_number}")
-            if page_number in self.dirty_arr:
-                self.dirty_arr.remove(page_number)
+            # if page_number in self.dirty_arr:
+                # self.dirty_arr.remove(page_number)
         else:
             for i in range(self.clock_frames):
                 if self.clock_mem_table[i] == page_number:
