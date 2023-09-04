@@ -5,7 +5,7 @@ class ClockMMU(MMU):
         # TODO: Constructor logic for clockMMU
         self.clock_index = 0
         self.clock_mem_table = [None] * (frames)
-        self.use_arr = [None] * (frames)
+        self.use_arr = [0] * (frames)
         self.clock_frames = frames
         self.dirty_arr = []
         self.read_count = 0
@@ -26,17 +26,24 @@ class ClockMMU(MMU):
 
     def read_memory(self, page_number):
         # TODO: Implement the method to read memory
+        if 0 not in self.use_arr:
+            self.clock_index = 0
 
         # TODO: add a check with empty page, and adding handler for there is an empty page
         if page_number not in self.clock_mem_table:
             self.fault_count += 1
             self.read_count += 1
+
             
             if None not in self.clock_mem_table:
                 while self.use_arr[self.clock_index] == 1:
                     self.use_arr[self.clock_index] = 0
                     self.clock_index += 1
                     self.clock_index %= self.clock_frames
+                    if self.dbg:
+                        print("##############")
+                        print(self.clock_index)
+                        print("##############")
 
                 if self.clock_mem_table[self.clock_index] in self.dirty_arr:
                     self.write_count += 1
@@ -75,9 +82,17 @@ class ClockMMU(MMU):
         if self.dbg:
                 print(f"Dirty: {self.dirty_arr}")
                 print(f"stuff in memory: {self.clock_mem_table}")
+        if self.dbg:
+            print(self.use_arr)
+            print("**************")
+            print(self.clock_index)
+            print("**************")
+
 
     def write_memory(self, page_number):
         # TODO: Implement the method to write memory
+        if 0 not in self.use_arr:
+            self.clock_index = 0
 
         if page_number not in self.clock_mem_table:
             self.fault_count += 1
@@ -91,6 +106,11 @@ class ClockMMU(MMU):
                     self.use_arr[self.clock_index] = 0
                     self.clock_index += 1
                     self.clock_index %= self.clock_frames
+                    if self.dbg:
+                        print("##############")
+                        print(self.clock_index)
+                        print("##############")
+
 
                 if self.clock_mem_table[self.clock_index] in self.dirty_arr:
                     self.write_count += 1
@@ -125,10 +145,15 @@ class ClockMMU(MMU):
                 if self.clock_mem_table[i] == page_number:
                     self.use_arr[i] = 1
                     break
-            self.clock_index += 1
-            self.clock_index %= self.clock_frames
+            # self.clock_index += 1
+            # self.clock_index %= self.clock_frames
             if page_number not in self.dirty_arr:
                 self.dirty_arr.append(page_number)
+        if self.dbg:
+            print(self.use_arr)
+            print("^^^^^^^^^^^^^^^^")
+            print(self.clock_index)
+            print("^^^^^^^^^^^^^^^^")
 
     def get_total_disk_reads(self):
         # TODO: Implement the method to get total disk reads
