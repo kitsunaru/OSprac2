@@ -1,0 +1,21 @@
+
+def write_memory(self, page_number):
+   	
+	if page_number not in self.lru_mem_table:
+		fault++
+		write++
+		if None not in mem_table:
+			//go around clock and choose victim (set index)
+			while (UA[i] == 1)
+			    UA[i] = 0;
+			    i++, mod frames
+			if UA[i] in dirty_arr, remove and write++
+		else (there are Nulls)
+			//first null found is victim, set index
+			
+		//replace values: new VPN in table and 1 in useArr at index(do not push/pop to keep order in PT)
+		//place in dirty array
+
+	else (i.e. it is present in PT)
+		get index of existing table entry (= index)
+		set UA[index] = 1
